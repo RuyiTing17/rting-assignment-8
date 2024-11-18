@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from scipy.spatial.distance import cdist
 import os
 
-matplotlib.use('Agg')  # Use a non-GUI backend
+matplotlib.use('Agg')
 result_dir = "results"
 os.makedirs(result_dir, exist_ok=True)
 
@@ -28,18 +28,13 @@ def generate_ellipsoid_clusters(distance, n_samples=100, cluster_std=0.5):
     return X, y
 
 def classification_loss(model, X, y):
-    # Retrieve the predicted probabilities from the logistic model
     predicted_probabilities = model.predict_proba(X)
-    # Define a small constant to prevent logarithm of zero in calculations
     small_value = 1e-15  
-    # Clip probabilities to ensure they are within the valid range for log calculation
     predicted_probabilities = np.clip(predicted_probabilities, small_value, 1 - small_value)
-    # Compute the logistic loss, also known as cross-entropy loss
     classification_loss = -np.mean(y * np.log(predicted_probabilities[:, 1]) +
                                    (1 - y) * np.log(1 - predicted_probabilities[:, 1]))
     return classification_loss
 
-# Function to fit logistic regression and extract coefficients
 def fit_logistic_regression(X, y):
     model = LogisticRegression()
     model.fit(X, y)
